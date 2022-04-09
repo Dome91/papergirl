@@ -1,6 +1,8 @@
 package papergirl
 
-import "io"
+import (
+	"io"
+)
 
 type MockBookTypeIdentifier struct {
 	bookType BookType
@@ -35,4 +37,20 @@ func (streamer *MockComicBookContentStreamer) Files(reader io.Reader) ([]BookPag
 
 func (*MockComicBookContentStreamer) Stream(reader io.Reader, page BookPage, consumer func(reader io.Reader) error) error {
 	panic("unimplemented")
+}
+
+type MockPasswordHasher struct {
+}
+
+func NewMockPasswordHasher() PasswordHasher {
+	return &MockPasswordHasher{}
+}
+
+func (*MockPasswordHasher) Hash(password Password) (Password, error) {
+	var result string
+	for _, ch := range password {
+		result = string(ch) + result
+	}
+
+	return Password(result), nil
 }

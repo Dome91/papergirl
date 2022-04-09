@@ -6,5 +6,7 @@ func initializeTest() {
 		NewInMemoryBookStorage(),
 		NewMockBookTypeIdentifier(CBZ, nil),
 		NewMockComicBookContentStreamer([]BookPage{}),
+		NewInMemoryUsers(),
+		NewMockPasswordHasher(),
 	)
 }

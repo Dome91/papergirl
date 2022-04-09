@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	l "log"
+	"strconv"
 )
 
 var log Logger
@@ -46,6 +47,7 @@ func (*SimpleLogger) Info(msg string) {
 }
 
 type InMemoryRepository[E Entity] struct {
+	id    int
 	store map[ID]E
 }
 
@@ -57,7 +59,15 @@ func NewInMemoryRepository[E Entity]() *InMemoryRepository[E] {
 }
 
 func (repository *InMemoryRepository[E]) Save(entity E) error {
-	repository.store[entity.ID()] = entity
+	var id ID
+	if entity.ID() == "" {
+		id = ID(strconv.Itoa(repository.id))
+		repository.id = repository.id + 1
+	} else {
+		id = entity.ID()
+	}
+
+	repository.store[id] = entity
 	return nil
 }
 
