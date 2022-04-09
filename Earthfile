@@ -16,5 +16,11 @@ test:
 
 build:
     FROM +test
-    RUN go build -o build/papergirl app/*
-    SAVE ARTIFACT build/papergirl /papergirl AS LOCAL build/papergirl
+    RUN go build -o papergirl app/*
+    SAVE ARTIFACT papergirl /papergirl AS LOCAL build/papergirl
+
+docker:
+    FROM ubuntu:20.04
+    COPY +build/papergirl .
+    ENTRYPOINT ["/papergirl"]
+    SAVE IMAGE papergirl:latest
