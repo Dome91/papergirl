@@ -4,7 +4,6 @@ import (
 	"errors"
 	"io"
 	_log "log"
-	"strconv"
 )
 
 var (
@@ -59,19 +58,6 @@ func NewInMemoryRepository[E Entity]() *InMemoryRepository[E] {
 	return &InMemoryRepository[E]{
 		store: store,
 	}
-}
-
-func (repository *InMemoryRepository[E]) Save(entity E) error {
-	var id ID
-	if entity.ID() == "" {
-		id = ID(strconv.Itoa(repository.id))
-		repository.id = repository.id + 1
-	} else {
-		id = entity.ID()
-	}
-
-	repository.store[id] = entity
-	return nil
 }
 
 func (repository *InMemoryRepository[E]) FindByID(id ID) (E, error) {

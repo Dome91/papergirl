@@ -1,5 +1,7 @@
 package papergirl
 
+import "strconv"
+
 const (
 	RoleAdmin UserRole = "Admin"
 	RoleUser  UserRole = "User"
@@ -58,6 +60,16 @@ type InMemoryUsers struct {
 func NewInMemoryUsers() Users {
 	repository := NewInMemoryRepository[User]()
 	return &InMemoryUsers{repository}
+}
+
+func (users *InMemoryUsers) Save(user User) error {
+	if user.ID() == "" {
+		user.id = ID(strconv.Itoa(users.id))
+		users.id = users.id + 1
+	}
+
+	users.store[user.id] = user
+	return nil
 }
 
 func (users *InMemoryUsers) Count() (int, error) {

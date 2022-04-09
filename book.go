@@ -6,6 +6,7 @@ import (
 	"io"
 	_path "path"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -46,6 +47,10 @@ func NewBook(path Path, bookType BookType, pages []BookPage) Book {
 
 func (book Book) ID() ID {
 	return book.id
+}
+
+func (book Book) SetID(id ID) {
+	book.id = id
 }
 
 type Books interface {
@@ -115,7 +120,13 @@ func createComic(path Path, bookType BookType) (Book, error) {
 }
 
 func updateBook(book Book) (Book, error) {
-	return Book{}, nil
+	createdBook, err := createBook(book.Path)
+	if err != nil {
+		return Book{}, nil
+	}
+
+	createdBook.id = book.id
+	return createdBook, nil
 }
 
 type InMemoryBooks struct {
@@ -127,15 +138,27 @@ func NewInMemoryBooks() Books {
 	return &InMemoryBooks{repository}
 }
 
+func (books *InMemoryBooks) Save(book Book) error {
+	if book.ID() == "" {
+		book.id = ID(strconv.Itoa(books.id))
+		books.id = books.id + 1
+	}
+
+	books.store[book.id] = book
+	return nil
+}
+
 func (books *InMemoryBooks) FindByPath(path Path) (Book, error) {
 	var foundBook Book
+	var found bool
 	for _, book := range books.store {
 		if book.Path == path {
+			found = true
 			foundBook = book
 		}
 	}
 
-	if foundBook.id == "" {
+	if !found {
 		return foundBook, ErrNotFound
 	}
 
