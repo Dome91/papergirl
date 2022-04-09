@@ -23,4 +23,4 @@ docker:
     FROM ubuntu:20.04
     COPY +build-app/papergirl .
     ENTRYPOINT ["/papergirl"]
-    SAVE IMAGE papergirl:latest
+    SAVE IMAGE --push ghcr.io/dome91/papergirl:latest
