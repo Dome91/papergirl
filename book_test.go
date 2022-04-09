@@ -25,6 +25,7 @@ func TestCreateComic(t *testing.T) {
 	createdBook := allBooks[0]
 	assert.Equal(t, BookTitle("book"), createdBook.Title)
 	assert.Equal(t, path, createdBook.Path)
+	assert.Equal(t, CBZ, createdBook.Type)
 	assert.Len(t, createdBook.Pages, 2)
 	assert.Equal(t, page2, createdBook.Pages[0])
 	assert.Equal(t, page1, createdBook.Pages[1])

@@ -24,11 +24,12 @@ type Book struct {
 	id      ID
 	Title   BookTitle
 	Path    Path
+	Type    BookType
 	Pages   []BookPage
 	CoverID ID
 }
 
-func NewBook(path Path, pages []BookPage) Book {
+func NewBook(path Path, bookType BookType, pages []BookPage) Book {
 	base := ppath.Base(string(path))
 	title := BookTitle(strings.TrimSuffix(base, ppath.Ext(base)))
 	sort.Slice(pages, func(i, j int) bool {
@@ -38,6 +39,7 @@ func NewBook(path Path, pages []BookPage) Book {
 	return Book{
 		Title: title,
 		Path:  path,
+		Type:  bookType,
 		Pages: pages,
 	}
 }
@@ -109,7 +111,7 @@ func createComic(path Path, bookType BookType) (Book, error) {
 		return Book{}, err
 	}
 
-	return NewBook(path, pages), nil
+	return NewBook(path, bookType, pages), nil
 }
 
 func updateBook(book Book) (Book, error) {
