@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"io"
-	ppath "path"
+	_path "path"
 	"sort"
 	"strings"
 )
@@ -30,8 +30,8 @@ type Book struct {
 }
 
 func NewBook(path Path, bookType BookType, pages []BookPage) Book {
-	base := ppath.Base(string(path))
-	title := BookTitle(strings.TrimSuffix(base, ppath.Ext(base)))
+	base := _path.Base(string(path))
+	title := BookTitle(strings.TrimSuffix(base, _path.Ext(base)))
 	sort.Slice(pages, func(i, j int) bool {
 		return pages[i] < pages[j]
 	})

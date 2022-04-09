@@ -3,16 +3,19 @@ package papergirl
 import (
 	"errors"
 	"io"
-	l "log"
+	_log "log"
 	"strconv"
 )
 
-var log Logger
+var (
+	log         Logger
+	ErrNotFound = errors.New("not found")
+)
 
-type ID string
-type Path string
-
-var ErrNotFound = errors.New("not found")
+type (
+	ID   string
+	Path string
+)
 
 type Logger interface {
 	Info(msg string)
@@ -43,7 +46,7 @@ func NewSimpleLogger() Logger {
 }
 
 func (*SimpleLogger) Info(msg string) {
-	l.Println("INFO: " + msg)
+	_log.Println("INFO: " + msg)
 }
 
 type InMemoryRepository[E Entity] struct {
