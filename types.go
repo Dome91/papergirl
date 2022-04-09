@@ -1,9 +1,21 @@
 package papergirl
 
-import "io"
+import (
+	"errors"
+	"io"
+	l "log"
+)
+
+var log Logger
 
 type ID string
 type Path string
+
+var ErrNotFound = errors.New("not found")
+
+type Logger interface {
+	Info(msg string)
+}
 
 type Entity interface {
 	ID() ID
@@ -19,6 +31,18 @@ type Repository[E Entity] interface {
 
 type Storage interface {
 	Store(path Path, reader io.Reader) error
+	Retrieve(path Path, consumer func(io.Reader) error) error
+}
+
+type SimpleLogger struct {
+}
+
+func NewSimpleLogger() Logger {
+	return &SimpleLogger{}
+}
+
+func (*SimpleLogger) Info(msg string) {
+	l.Println("INFO: " + msg)
 }
 
 type InMemoryRepository[E Entity] struct {
@@ -60,5 +84,25 @@ func (repository *InMemoryRepository[E]) DeleteAll() error {
 		delete(repository.store, id)
 	}
 
+	return nil
+}
+
+type InMemoryStorage struct {
+	storage map[Path][]byte
+}
+
+func NewInMemoryStorage() *InMemoryStorage {
+	return &InMemoryStorage{
+		storage: make(map[Path][]byte),
+	}
+}
+
+func (storage *InMemoryStorage) Store(path Path, reader io.Reader) error {
+	bytes, err := io.ReadAll(reader)
+	if err != nil {
+		return err
+	}
+
+	storage.storage[path] = bytes
 	return nil
 }
