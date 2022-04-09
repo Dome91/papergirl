@@ -1,7 +1,5 @@
 package papergirl
 
-import "strconv"
-
 const (
 	RoleAdmin UserRole = "Admin"
 	RoleUser  UserRole = "User"
@@ -16,7 +14,7 @@ type (
 )
 
 type User struct {
-	id       ID
+	Id       ID
 	Username Username
 	Password Password
 	Role     UserRole
@@ -31,7 +29,7 @@ func NewUser(username Username, password Password, role UserRole) User {
 }
 
 func (user User) ID() ID {
-	return user.id
+	return user.Id
 }
 
 type Users interface {
@@ -60,16 +58,6 @@ type InMemoryUsers struct {
 func NewInMemoryUsers() Users {
 	repository := NewInMemoryRepository[User]()
 	return &InMemoryUsers{repository}
-}
-
-func (users *InMemoryUsers) Save(user User) error {
-	if user.ID() == "" {
-		user.id = ID(strconv.Itoa(users.id))
-		users.id = users.id + 1
-	}
-
-	users.store[user.id] = user
-	return nil
 }
 
 func (users *InMemoryUsers) Count() (int, error) {

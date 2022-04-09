@@ -4,6 +4,8 @@ import (
 	"errors"
 	"io"
 	_log "log"
+	"reflect"
+	"strconv"
 )
 
 var (
@@ -58,6 +60,19 @@ func NewInMemoryRepository[E Entity]() *InMemoryRepository[E] {
 	return &InMemoryRepository[E]{
 		store: store,
 	}
+}
+
+func (repository *InMemoryRepository[E]) Save(entity E) error {
+	if entity.ID() == "" {
+		id := strconv.Itoa(repository.id)
+		repository.id = repository.id + 1
+		ptr := reflect.ValueOf(&entity)
+		v := reflect.Indirect(ptr)
+		v.FieldByName("Id").SetString(id)
+	}
+
+	repository.store[entity.ID()] = entity
+	return nil
 }
 
 func (repository *InMemoryRepository[E]) FindByID(id ID) (E, error) {
